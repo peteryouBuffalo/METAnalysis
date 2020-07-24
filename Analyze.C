@@ -51,5 +51,5 @@ int main(int argc, char**argv)
 
 	Plots p;
 	p.AddBg(ttbar->histograms, std::string("TTbar"));
-	p.PlotAll(string("results/results.pdf"));
+	p.PlotAll(std::string("results/results.pdf"));
 }

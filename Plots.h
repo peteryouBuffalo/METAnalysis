@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include <TH1F.h>
+#include <TFile.h>
 #include <TStyle.h>
 #include <THStack.h>
 #include <TCanvas.h>
