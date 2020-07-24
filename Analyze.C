@@ -43,13 +43,37 @@ int main(int argc, char**argv)
 	}
 	else 
 	{
-		std::cout << "Unable to open ttbarData.txt" << std::endl;
+		std::cout << "Unable to open files/ttbarData.txt" << std::endl;
 		return -1;
 	}
 
 	ch->Process(ttbar, "", finalEntry, initEntry);
 
+	// Create the reader for Z+x and add data to it
+	TTbarSelector *zhf = new TTbarSelector();
+	TChain* ch2 = new TChain("Events");
+
+	std::ifstream myfile2("files/dyData.txt");
+	if (myfile2.is_open())
+	{
+		Int_t nFiles = 0;
+		while(getline(myfile2,line)) {
+			const char* cstr = line.c_str();
+			ch2->Add(cstr); ++nFiles;
+		}
+		myfile2.close();
+		std::cout << nFiles << " files added to Z+x analysis..." << std::endl;
+	}
+	else
+	{
+		std::cout << "Unable to open files/dyData.txt" << std::endl;
+		return -1;
+	}
+
+	ch2->Process(zhf, "", finalEntry, initEntry);
+
 	Plots p;
 	p.AddBg(ttbar->histograms, std::string("TTbar"));
+	p.AddBg(zhf->histograms, std::string("Z+x"));
 	p.PlotAll(std::string("results/results.pdf"));
 }
