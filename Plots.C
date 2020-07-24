@@ -1,10 +1,12 @@
 #include "Plots.h"
+#include <TFile.h>
 
 Plots::Plots() {} 
 Plots::~Plots() {}
 
 void Plots::PlotAll(string filename)
 {
+	TFile *f = new TFile("out.root", "RECREATE");
 	gROOT->Reset();
 
 	TStyle *MyStyle = new TStyle("MyStyle","My Root Styles");
@@ -94,7 +96,8 @@ void Plots::PlotAll(string filename)
 		    }//end-for-loop
 		}//end-if
 
-		TCanvas *c = new TCanvas("c", "c", 800, 600);
+		std::string name = "c" + std::to_string(i);
+		TCanvas *c = new TCanvas(name.c_str(), "c", 800, 600);
 		c->SetLogy(true);
 		std::string plotname;
 		if (data.size() == 0 && bg.size() > 0)
@@ -116,5 +119,9 @@ void Plots::PlotAll(string filename)
 		{ c->Print((filename+std::string(")")).c_str()); }
 		else { c->Print(filename.c_str()); }
 
+		c->Write();
+
 	}//end-for-loop
+
+	f->Close(); delete f;
 }//end-method
