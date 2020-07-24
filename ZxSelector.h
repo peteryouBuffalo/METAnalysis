@@ -16,6 +16,11 @@
 #include <TTreeReaderValue.h>
 #include <TTreeReaderArray.h>
 
+#include "JetObj.h"
+#include "ElecObj.h"
+#include "MuonObj.h"
+#include "PhotonObj.h"
+
 // Headers needed by this particular selector
 
 
@@ -23,6 +28,20 @@ class ZxSelector : public TSelector {
 public :
    TTreeReader     fReader;  //!the tree reader
    TTree          *fChain = 0;   //!pointer to the analyzed TTree or TChain
+
+   int TotalEvent = 0;
+   std::vector<JetObj> Jets;
+   std::vector<MuonObj> Muons;
+   std::vector<ElecObj> Electrons;
+   std::vector<PhotonObj> Photons;
+   std::vector<TH1F*> lHists;
+   std::vector<TH1F*> bHists;
+   std::vector<TH1F*> cHists;
+
+   TH1F* h_lMET;
+   TH1F* h_bMET;
+   TH1F* h_cMET;
+   void BuildEvent();
 
    // Readers to access the data (delete the ones you do not need).
    TTreeReaderValue<UInt_t> run = {fReader, "run"};

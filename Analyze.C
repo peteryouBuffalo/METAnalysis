@@ -1,5 +1,6 @@
 // include statements ////////////////////////////////////////////////////////////////////
 #include "TTbarSelector.h"
+#include "ZxSelector.h"
 #include "Plots.h"
 #include <cstdlib>
 #include <iostream>
@@ -50,7 +51,7 @@ int main(int argc, char**argv)
 	ch->Process(ttbar, "", finalEntry, initEntry);
 
 	// Create the reader for Z+x and add data to it
-	TTbarSelector *zhf = new TTbarSelector();
+	ZxSelector *zhf = new ZxSelector();
 	TChain* ch2 = new TChain("Events");
 
 	std::ifstream myfile2("files/dyData.txt");
@@ -74,6 +75,6 @@ int main(int argc, char**argv)
 
 	Plots p;
 	p.AddBg(ttbar->histograms, std::string("TTbar"));
-	p.AddBg(zhf->histograms, std::string("Z+x"));
+	p.AddBg(zhf->bHists, std::string("Z+b"));
 	p.PlotAll(std::string("results/results.pdf"));
 }
