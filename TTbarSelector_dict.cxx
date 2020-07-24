@@ -37,7 +37,7 @@
 namespace std {} using namespace std;
 
 // Header files passed as explicit arguments
-#include "TTbarSelector.h"
+#include "src/TTbarSelector.h"
 
 // Header files passed via #pragma extra_include
 
@@ -55,7 +55,7 @@ namespace ROOT {
       ::TTbarSelector *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::TTbarSelector >(0);
       static ::ROOT::TGenericClassInfo 
-         instance("TTbarSelector", ::TTbarSelector::Class_Version(), "TTbarSelector.h", 27,
+         instance("TTbarSelector", ::TTbarSelector::Class_Version(), "src/TTbarSelector.h", 23,
                   typeid(::TTbarSelector), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::TTbarSelector::Dictionary, isa_proxy, 16,
                   sizeof(::TTbarSelector) );
@@ -146,7 +146,7 @@ namespace ROOT {
 namespace {
   void TriggerDictionaryInitialization_TTbarSelector_dict_Impl() {
     static const char* headers[] = {
-"TTbarSelector.h",
+"src/TTbarSelector.h",
 0
     };
     static const char* includePaths[] = {
@@ -160,7 +160,7 @@ namespace {
 #pragma clang diagnostic ignored "-Wignored-attributes"
 #pragma clang diagnostic ignored "-Wreturn-type-c-linkage"
 extern int __Cling_Autoloading_Map;
-class __attribute__((annotate("$clingAutoload$TTbarSelector.h")))  TTbarSelector;
+class __attribute__((annotate("$clingAutoload$src/TTbarSelector.h")))  TTbarSelector;
 )DICTFWDDCLS";
     static const char* payloadCode = R"DICTPAYLOAD(
 #line 1 "TTbarSelector_dict dictionary payload"
@@ -170,7 +170,7 @@ class __attribute__((annotate("$clingAutoload$TTbarSelector.h")))  TTbarSelector
 #endif
 
 #define _BACKWARD_BACKWARD_WARNING_H
-#include "TTbarSelector.h"
+#include "src/TTbarSelector.h"
 
 #undef  _BACKWARD_BACKWARD_WARNING_H
 )DICTPAYLOAD";

@@ -16,11 +16,6 @@
 #include <TTreeReaderValue.h>
 #include <TTreeReaderArray.h>
 
-#include "JetObj.h"
-#include "ElecObj.h"
-#include "MuonObj.h"
-#include "PhotonObj.h"
-
 // Headers needed by this particular selector
 
 
@@ -30,10 +25,6 @@ public :
    TTree          *fChain = 0;   //!pointer to the analyzed TTree or TChain
 
    int TotalEvent = 0;
-   std::vector<JetObj> Jets;
-   std::vector<MuonObj> Muons;
-   std::vector<ElecObj> Electrons;
-   std::vector<PhotonObj> Photons;
    std::vector<TH1F*> lHists;
    std::vector<TH1F*> bHists;
    std::vector<TH1F*> cHists;

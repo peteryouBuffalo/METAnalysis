@@ -31,45 +31,7 @@
 
 void ZxSelector::BuildEvent()
 {
-    // Get all of the muons from the event
-   Muons.clear();
-   for (Int_t i = 0; i < *nMuon; ++i)
-   {
-	MuonObj muon;
-	muon.SetIsolation(Muon_jetRelIso[i]);
-	muon.SetPtEtaPhiM(Muon_pt[i],Muon_eta[i],Muon_phi[i],Muon_mass[i]);
-	muon.SetCharge(Muon_charge[i]);
-	Muons.push_back(muon);
-   }
-
-   // Get all of the electrons from the event
-   Electrons.clear();
-   for (Int_t i = 0; i < *nElectron; ++i)
-   {
-	ElecObj elec;
-	elec.SetPtEtaPhiM(Electron_pt[i],Electron_eta[i],Electron_phi[i],Electron_mass[i]);
-	elec.SetCharge(Electron_charge[i]);
-	Electrons.push_back(elec);
-   }
-
-   // Get all of the photons from the event
-   Photons.clear();
-   for (Int_t i = 0; i < *nPhoton; ++i)
-   {
-	PhotonObj photon;
-	photon.SetPtEtaPhiM(Photon_pt[i],Photon_eta[i],Photon_phi[i],Photon_mass[i]);
-	Photons.push_back(photon);
-   }
-
-   // Get all of the jets from the event
-   Jets.clear();
-   for (Int_t i = 0; i < *nJet; ++i)
-   {
-	JetObj jet;
-	jet.SetJetID(Jet_jetId[i]);
-	jet.SetPtEtaPhiM(Jet_pt[i],Jet_eta[i],Jet_phi[i],Jet_mass[i]);
-	Jets.push_back(jet);
-   }
+   
 }
 
 void ZxSelector::Begin(TTree * /*tree*/)
@@ -129,7 +91,7 @@ Bool_t ZxSelector::Process(Long64_t entry)
 	std::cout << "MILEMARKER --> at event #" << TotalEvent << std::endl;
 
    BuildEvent();
-   if (Jets.size() == 0) return false;
+   //if (Jets.size() == 0) return false;
    h_bMET->Fill(*MET_pt);
 
    return kTRUE;

@@ -1,7 +1,7 @@
 // include statements ////////////////////////////////////////////////////////////////////
-#include "TTbarSelector.h"
-#include "ZxSelector.h"
-#include "Plots.h"
+#include "src/TTbarSelector.h"
+#include "src/ZxSelector.h"
+#include "src/Plots.h"
 #include <cstdlib>
 #include <iostream>
 #include <fstream>

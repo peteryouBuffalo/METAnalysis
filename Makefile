@@ -13,10 +13,10 @@ SOFLAGS += $(ROOTGLIBS)
 Task: clean mydict main clean
 
 mydict:
-	@rootcint TTbarSelector_dict.cxx -c TTbarSelector.h
-	@rootcint ZxSelector_dict.cxx -c ZxSelector.h
+	@rootcint TTbarSelector_dict.cxx -c src/TTbarSelector.h
+	@rootcint ZxSelector_dict.cxx -c src/ZxSelector.h
 
-main: Analyze.C TTbarSelector_dict.o TTbarSelector.o ZxSelector.o ZxSelector_dict.o JetObj.o MuonObj.o ElecObj.o PhotonObj.o Plots.o
+main: Analyze.C TTbarSelector_dict.o TTbarSelector.o ZxSelector.o ZxSelector_dict.o  src/Plots.o
 	$(CXX) $(CXXFLAGS) $(ROOTGLIBS) $^ -o $@
 	@echo '-> main created!'
 	@echo '-> run by command: ./main'
@@ -24,7 +24,13 @@ main: Analyze.C TTbarSelector_dict.o TTbarSelector.o ZxSelector.o ZxSelector_dic
 %.o: %.C
 	$(CXX) $(CXXFLAGS) -c $^ -o $@
 
+%.o: src/%.C
+	$(CXX) $(CXXFLAGS) -c $^ -o $@
+
 %.o: %.h
+	$(CXX) $(CXXFLAGS) -c $^ -o $@
+
+%.o: src/%.h
 	$(CXX) $(CXXFLAGS) -c $^ -o $@
 
 TTbarSelector_dict.o: TTbarSelector_dict.cxx

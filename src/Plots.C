@@ -6,7 +6,7 @@ Plots::~Plots() {}
 
 void Plots::PlotAll(string filename)
 {
-	TFile *f = new TFile("out.root", "RECREATE");
+	TFile *f = new TFile("results/out.root", "RECREATE");
 	gROOT->Reset();
 
 	TStyle *MyStyle = new TStyle("MyStyle","My Root Styles");

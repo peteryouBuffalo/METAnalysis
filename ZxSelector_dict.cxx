@@ -37,7 +37,7 @@
 namespace std {} using namespace std;
 
 // Header files passed as explicit arguments
-#include "ZxSelector.h"
+#include "src/ZxSelector.h"
 
 // Header files passed via #pragma extra_include
 
@@ -55,7 +55,7 @@ namespace ROOT {
       ::ZxSelector *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::ZxSelector >(0);
       static ::ROOT::TGenericClassInfo 
-         instance("ZxSelector", ::ZxSelector::Class_Version(), "ZxSelector.h", 27,
+         instance("ZxSelector", ::ZxSelector::Class_Version(), "src/ZxSelector.h", 22,
                   typeid(::ZxSelector), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::ZxSelector::Dictionary, isa_proxy, 16,
                   sizeof(::ZxSelector) );
@@ -146,7 +146,7 @@ namespace ROOT {
 namespace {
   void TriggerDictionaryInitialization_ZxSelector_dict_Impl() {
     static const char* headers[] = {
-"ZxSelector.h",
+"src/ZxSelector.h",
 0
     };
     static const char* includePaths[] = {
@@ -160,7 +160,7 @@ namespace {
 #pragma clang diagnostic ignored "-Wignored-attributes"
 #pragma clang diagnostic ignored "-Wreturn-type-c-linkage"
 extern int __Cling_Autoloading_Map;
-class __attribute__((annotate("$clingAutoload$ZxSelector.h")))  ZxSelector;
+class __attribute__((annotate("$clingAutoload$src/ZxSelector.h")))  ZxSelector;
 )DICTFWDDCLS";
     static const char* payloadCode = R"DICTPAYLOAD(
 #line 1 "ZxSelector_dict dictionary payload"
@@ -170,7 +170,7 @@ class __attribute__((annotate("$clingAutoload$ZxSelector.h")))  ZxSelector;
 #endif
 
 #define _BACKWARD_BACKWARD_WARNING_H
-#include "ZxSelector.h"
+#include "src/ZxSelector.h"
 
 #undef  _BACKWARD_BACKWARD_WARNING_H
 )DICTPAYLOAD";
