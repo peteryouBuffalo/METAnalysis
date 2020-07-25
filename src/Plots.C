@@ -1,8 +1,81 @@
 #include "Plots.h"
 #include <TFile.h>
+#include <TGraph.h>
+#include <TMultiGraph.h>
 
 Plots::Plots() {} 
 Plots::~Plots() {}
+
+void Plots::PlotROC(string filename)
+{
+	TFile *f = new TFile("results/out.root", "UPDATE");
+	
+	// Generate the efficiencies of the background
+	Int_t bgTotal = tData.size(), N = 22;
+	Double_t cuts[N], bgEff[N];
+	std::vector<std::vector<Double_t>> dataEff;
+
+	for (Int_t i = 0; i < N; ++i)
+	{
+		cuts[i] = i*5;
+		Int_t nBg = 0;
+
+		for (Int_t t = 0; t < bgTotal; ++t)
+		{ if (tData.at(t) < cuts[i]) ++nBg; }
+
+		bgEff[i] = nBg/(bgTotal*1.0);
+
+		std::vector<Double_t> effAtCutI;
+
+		// generate the efficiencies for each Z+x set
+		for (Int_t j = 0; j < zData.size(); ++j)
+		{
+			Int_t nSize = zData.at(j).size(), nZ = 0;
+			for (Int_t t = 0; t < nSize; ++t)
+			{ if (zData.at(j).at(t) < cuts[i]) ++nZ; }
+
+			Double_t zEff = nZ/(nSize*1.0);
+			effAtCutI.push_back(zEff);
+		}
+
+		dataEff.push_back(effAtCutI);
+	}	
+
+	// Now that the data has been calculated, let's appropriately move it 
+	// into graphs to add to a canvas & multigraph
+	TMultiGraph *mg = new TMultiGraph("mg", "Z+f Selection Eff. vs. TTbar Selection Eff.");
+	mg->GetXaxis()->SetTitle("ttbar Selection Eff.");
+	mg->GetXaxis()->SetLimits(0.,1.);
+	mg->GetYaxis()->SetTitle("Z+f Selection Eff.");
+	mg->GetYaxis()->SetLimits(0.,1.);	
+
+	TLegend *l = new TLegend(0.68, 0.72, 0.98, 0.92);
+	
+	for (Int_t i = 0; i < zData.size(); ++i)
+	{
+		Double_t data[N];
+		for (Int_t j = 0; j < N; ++j)
+			data[j] = dataEff.at(j).at(i);
+
+		TGraph* gr = new TGraph(N, bgEff, data);
+		if (i == 0) gr->SetLineColor(kGreen);
+		else if (i == 1) gr->SetLineColor(kRed);
+		else if (i == 2) gr->SetLineColor(kBlue);
+		else gr->SetLineColor(kMagenta);
+
+		mg->Add(gr, "c*");
+		std::string str = names.at(i) + " vs. " + bgName;
+		l->AddEntry(gr, str.c_str(), "f");
+	}
+
+	// Now that we have the entries made, let's draw everything together.
+	TCanvas *cs = new TCanvas("ROC", "", 10, 10, 700, 900);
+	mg->Draw("ac*"); l->Draw(); cs->SetGrid();
+	gPad->Update(); gPad->Modified();
+
+	cs->Write(); f->Close(); delete f;
+	cs->Print(filename.c_str());
+}
 
 void Plots::PlotAll(string filename)
 {

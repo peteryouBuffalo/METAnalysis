@@ -21,6 +21,19 @@ public:
 	Plots();
 	virtual ~Plots();
 	virtual void PlotAll(string filename);
+	virtual void PlotROC(string filename);
+
+	void AddBgData(vector<Float_t> v, string n)
+	{
+		tData = v;
+		bgName = n;
+	}
+
+	void AddData(vector<Float_t> v, string n)
+	{
+		zData.push_back(v);
+		names.push_back(n);
+	}
 
 	void SetData(vector<TH1F*> v, string n)
 	{
@@ -71,6 +84,11 @@ private:
 	vector<string> signal_names;
 
 	int N_histos;
+
+	vector<Float_t> tData;
+	vector<vector<Float_t>> zData;
+	string bgName;
+	vector<string> names;
 };
 
 #endif
