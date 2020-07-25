@@ -31,7 +31,45 @@
 
 void ZxSelector::BuildEvent()
 {
-   
+   // Get the electrons from the event
+   Electrons.clear();
+   for (unsigned int i = 0; i < *nElectron; ++i)
+   {	
+	LepObj elec(Electron_pt[i],Electron_eta[i],Electron_phi[i],
+	Electron_mass[i], 0);
+ 	Electrons.push_back(elec);
+   }
+
+   // Get the muons from the event
+   Muons.clear();
+   for (unsigned int i = 0; i < *nMuon; ++i)
+   {
+	LepObj muon(Muon_pt[i],Muon_eta[i],Muon_phi[i],Muon_mass[i],
+	Muon_pfRelIso04_all[i]);
+	Muons.push_back(muon);
+   }
+
+   // Get the secondary vertex options
+   for (unsigned int i = 0; i < *nSV; ++i)
+   {
+	TLorentzVector tmp;
+        tmp.SetPtEtaPhiM(SV_pt[i],SV_eta[i],SV_phi[i],SV_mass[i]);
+	SVs.push_back(tmp);
+   }
+
+   // ...Bennie and the Jets
+   for (unsigned int i = 0; i < *nJet; ++i)
+   {
+	JetObj jet(Jet_pt[i], Jet_eta[i], Jet_phi[i], Jet_mass[i],
+	Jet_hadronFlavour[i], Jet_btagDeepB[i], Jet_btagDeepFlavB[i]);
+	jet.SetSV(SVs);
+
+	// ignore jets that overlap with leptons
+	if (jet.IsLepton(Electrons)) continue;
+	if (jet.IsLepton(Muons)) continue;
+
+	Jets.push_back(jet);
+   }
 }
 
 void ZxSelector::Begin(TTree * /*tree*/)
@@ -55,13 +93,25 @@ void ZxSelector::SlaveBegin(TTree * /*tree*/)
    h_lMET->SetXTitle("MET [GeV]"); h_lMET->SetYTitle("Events/2 GeV");
    lHists.push_back(h_lMET);
 
+   h_nLJets = new TH1F("nJets", "No. Jets", 10, -0.5, 9.5);
+   h_nLJets->SetXTitle("nJets"); h_nLJets->SetYTitle("Events");
+   lHists.push_back(h_nLJets);
+
    h_bMET = new TH1F("MET", "MET Analysis", 150, -0.5, 299.5);
    h_bMET->SetXTitle("MET [GeV]"); h_bMET->SetYTitle("Events/2 GeV");
    bHists.push_back(h_bMET);
 
+   h_nBJets = new TH1F("nJets", "No. Jets", 10, -0.5, 9.5);
+   h_nBJets->SetXTitle("nJets"); h_nBJets->SetYTitle("Events");
+   bHists.push_back(h_nBJets);
+
    h_cMET = new TH1F("MET", "MET Analysis", 150, -0.5, 299.5);
    h_cMET->SetXTitle("MET [GeV]"); h_cMET->SetYTitle("Events/2 GeV");
    cHists.push_back(h_cMET);
+
+   h_nCJets = new TH1F("nJets", "No. Jets", 10, -0.5, 9.5);
+   h_nCJets->SetXTitle("nJets"); h_nCJets->SetYTitle("Events");
+   cHists.push_back(h_nCJets);
 
 }
 
@@ -88,11 +138,25 @@ Bool_t ZxSelector::Process(Long64_t entry)
    ++TotalEvent;
 
    if (TotalEvent % 10000 == 0)
-	std::cout << "MILEMARKER --> at event #" << TotalEvent << std::endl;
+	std::cout << "Z+x MILEMARKER --> at event #" << TotalEvent << std::endl;
 
    BuildEvent();
-   //if (Jets.size() == 0) return false;
-   h_bMET->Fill(*MET_pt);
+   if (Jets.size() == 0) return false;
+   
+   // check the jet types
+   bool isBtag = false;
+   float csv = Jets.at(0).m_deepCSV;
+   if (csv >= 0.6321) isBtag = true;
+   
+
+   if (isBtag){
+	 h_bMET->Fill(*MET_pt);
+	 h_nBJets->Fill(Jets.size());
+   }
+   else {
+	h_lMET->Fill(*MET_pt);
+	h_nLJets->Fill(Jets.size());
+   }
 
    return kTRUE;
 }

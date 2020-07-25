@@ -55,7 +55,7 @@ namespace ROOT {
       ::ZxSelector *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::ZxSelector >(0);
       static ::ROOT::TGenericClassInfo 
-         instance("ZxSelector", ::ZxSelector::Class_Version(), "src/ZxSelector.h", 22,
+         instance("ZxSelector", ::ZxSelector::Class_Version(), "src/ZxSelector.h", 24,
                   typeid(::ZxSelector), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::ZxSelector::Dictionary, isa_proxy, 16,
                   sizeof(::ZxSelector) );

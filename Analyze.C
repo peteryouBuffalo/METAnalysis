@@ -75,6 +75,7 @@ int main(int argc, char**argv)
 
 	Plots p;
 	p.AddBg(ttbar->histograms, std::string("TTbar"));
+	p.AddBg(zhf->lHists, std::string("Z+l"));
 	p.AddBg(zhf->bHists, std::string("Z+b"));
 	p.PlotAll(std::string("results/results.pdf"));
 }

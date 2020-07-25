@@ -9,12 +9,14 @@
 #define ZxSelector_h
 
 #include <TROOT.h>
+#include <TLorentzVector.h>
 #include <TChain.h>
 #include <TFile.h>
 #include <TSelector.h>
 #include <TTreeReader.h>
 #include <TTreeReaderValue.h>
 #include <TTreeReaderArray.h>
+#include "Obj.C"
 
 // Headers needed by this particular selector
 
@@ -29,6 +31,14 @@ public :
    std::vector<TH1F*> bHists;
    std::vector<TH1F*> cHists;
 
+   std::vector<LepObj> Electrons;
+   std::vector<LepObj> Muons;
+   std::vector<JetObj> Jets;
+   std::vector<TLorentzVector> SVs;
+
+   TH1F* h_nBJets;
+   TH1F* h_nCJets;
+   TH1F* h_nLJets;
    TH1F* h_lMET;
    TH1F* h_bMET;
    TH1F* h_cMET;

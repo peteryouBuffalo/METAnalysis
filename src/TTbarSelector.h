@@ -9,6 +9,7 @@
 #define TTbarSelector_h
 
 #include <TROOT.h>
+#include <TLorentzVector.h>
 #include <TChain.h>
 #include <TFile.h>
 #include <TSelector.h>
@@ -31,9 +32,11 @@ public :
    std::vector<LepObj> Muons;
    std::vector<JetObj> Jets;
    std::vector<ZObj> ZBosons;
+   std::vector<TLorentzVector> SVs;
 
    std::vector<TH1F*> histograms;
    TH1F *h_MET;
+   TH1F *h_nJet;
    void BuildEvent();
 
    // Readers to access the data (delete the ones you do not need).

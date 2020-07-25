@@ -31,6 +31,43 @@
 
 void TTbarSelector::BuildEvent()
 {
+   	// Get the electrons from the event
+	Electrons.clear();
+	for (unsigned int i = 0; i < *nElectron; ++i)
+	{
+	LepObj elec(Electron_pt[i],Electron_eta[i],Electron_phi[i],
+    	Electron_mass[i], 0);
+    	Electrons.push_back(elec);	
+	}
+
+	// Get the muons from the event
+	Muons.clear();
+	for (unsigned int i = 0; i < *nMuon; ++i)
+	{
+	LepObj muon(Muon_pt[i],Muon_eta[i],Muon_phi[i],Muon_mass[i],
+    	Muon_pfRelIso04_all[i]);
+    	Muons.push_back(muon);
+	}
+
+	// Get the secondary vertex options
+	for (unsigned int i = 0; i < *nSV; ++i)
+	{
+	TLorentzVector tmp;
+	 tmp.SetPtEtaPhiM(SV_pt[i],SV_eta[i],SV_phi[i],SV_mass[i]);
+   	 SVs.push_back(tmp);
+	}
+
+	// ...Bennie and the Jets
+	for (unsigned int i = 0; i < *nJet; ++i)
+	{
+	JetObj jet(Jet_pt[i], Jet_eta[i], Jet_phi[i], Jet_mass[i],
+	    Jet_hadronFlavour[i], Jet_btagDeepB[i], Jet_btagDeepFlavB[i]);
+	    jet.SetSV(SVs);
+
+    	// ignore jets that overlap with leptons
+    	if (jet.IsLepton(Electrons)) continue;
+	Jets.push_back(jet);
+	}
    
 }
 
@@ -53,6 +90,10 @@ void TTbarSelector::SlaveBegin(TTree * /*tree*/)
    h_MET = new TH1F("MET", "MET Analysis", 150, -0.5, 299.5);
    h_MET->SetXTitle("MET [GeV]"); h_MET->SetYTitle("Events/2 GeV");
    h_MET->Sumw2(); histograms.push_back(h_MET);
+
+   h_nJet = new TH1F("nJets", "No. Jets", 10, -0.5, 9.5);
+   h_nJet->SetXTitle("nJets"); h_nJet->SetYTitle("Events");
+   histograms.push_back(h_nJet);
 }
 
 Bool_t TTbarSelector::Process(Long64_t entry)
@@ -61,11 +102,12 @@ Bool_t TTbarSelector::Process(Long64_t entry)
    GetEntry(entry);
    ++TotalEvents;
 
-   if (TotalEvents % 10000 == 0)
-	std::cout << "MILEMARKER --> at event #" << TotalEvents << std::endl;
+   if (TotalEvents % 1000 == 0)
+	std::cout << "TTBAR MILEMARKER --> at event #" << TotalEvents << std::endl;
 
    BuildEvent();
-
+   if (Jets.size() == 0) return false;
+   h_nJet->Fill(Jets.size());
    h_MET->Fill(*MET_pt);
 
    return kTRUE;
