@@ -50,6 +50,7 @@ void TTbarSelector::BuildEvent()
 	}
 
 	// Get the secondary vertex options
+        SVs.clear();
 	for (unsigned int i = 0; i < *nSV; ++i)
 	{
 	TLorentzVector tmp;
@@ -58,6 +59,7 @@ void TTbarSelector::BuildEvent()
 	}
 
 	// ...Bennie and the Jets
+        Jets.clear();
 	for (unsigned int i = 0; i < *nJet; ++i)
 	{
 	JetObj jet(Jet_pt[i], Jet_eta[i], Jet_phi[i], Jet_mass[i],
