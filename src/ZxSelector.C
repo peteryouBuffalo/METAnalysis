@@ -154,10 +154,12 @@ Bool_t ZxSelector::Process(Long64_t entry)
    if (isBtag){
 	 h_bMET->Fill(*MET_pt);
 	 h_nBJets->Fill(Jets.size());
+ 	 bData.push_back(*MET_pt);
    }
    else {
 	h_lMET->Fill(*MET_pt);
 	h_nLJets->Fill(Jets.size());
+	lData.push_back(*MET_pt);
    }
 
    return kTRUE;

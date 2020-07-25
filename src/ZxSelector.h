@@ -31,6 +31,10 @@ public :
    std::vector<TH1F*> bHists;
    std::vector<TH1F*> cHists;
 
+   std::vector<Float_t> lData;
+   std::vector<Float_t> bData;
+   std::vector<Float_t> cData;
+
    std::vector<LepObj> Electrons;
    std::vector<LepObj> Muons;
    std::vector<JetObj> Jets;

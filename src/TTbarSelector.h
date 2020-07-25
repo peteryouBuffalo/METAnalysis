@@ -33,6 +33,7 @@ public :
    std::vector<JetObj> Jets;
    std::vector<ZObj> ZBosons;
    std::vector<TLorentzVector> SVs;
+   std::vector<Float_t> data;
 
    std::vector<TH1F*> histograms;
    TH1F *h_MET;

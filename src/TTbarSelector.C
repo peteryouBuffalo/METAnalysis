@@ -111,6 +111,7 @@ Bool_t TTbarSelector::Process(Long64_t entry)
    if (Jets.size() == 0) return false;
    h_nJet->Fill(Jets.size());
    h_MET->Fill(*MET_pt);
+   data.push_back(*MET_pt);
 
    return kTRUE;
 }
