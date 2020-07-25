@@ -104,7 +104,7 @@ Bool_t TTbarSelector::Process(Long64_t entry)
    GetEntry(entry);
    ++TotalEvents;
 
-   if (TotalEvents % 1000 == 0)
+   if (TotalEvents % 10000 == 0)
 	std::cout << "TTBAR MILEMARKER --> at event #" << TotalEvents << std::endl;
 
    BuildEvent();

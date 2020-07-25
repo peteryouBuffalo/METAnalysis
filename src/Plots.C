@@ -2,6 +2,7 @@
 #include <TFile.h>
 #include <TGraph.h>
 #include <TMultiGraph.h>
+#include <TLatex.h>
 
 Plots::Plots() {} 
 Plots::~Plots() {}
@@ -45,9 +46,9 @@ void Plots::PlotROC(string filename)
 	// into graphs to add to a canvas & multigraph
 	TMultiGraph *mg = new TMultiGraph("mg", "Z+f Selection Eff. vs. TTbar Selection Eff.");
 	mg->GetXaxis()->SetTitle("ttbar Selection Eff.");
-	mg->GetXaxis()->SetLimits(0.,1.);
+	//mg->GetXaxis()->SetLimits(0.,1.);
 	mg->GetYaxis()->SetTitle("Z+f Selection Eff.");
-	mg->GetYaxis()->SetLimits(0.,1.);	
+	//mg->GetYaxis()->SetLimits(0.,1.);	
 
 	TLegend *l = new TLegend(0.68, 0.72, 0.98, 0.92);
 	
@@ -63,6 +64,19 @@ void Plots::PlotROC(string filename)
 		else if (i == 2) gr->SetLineColor(kBlue);
 		else gr->SetLineColor(kMagenta);
 
+		// Add the cut values to the graph
+		if (i == 0)
+		{
+		   for (Int_t j = 0; j < N; ++j)
+		   {
+			Double_t y = gr->GetY()[i]+0.1;
+			if (cuts[i] > 40) y = gr->GetY()[i] - 0.1;
+			TLatex *lt = new TLatex(gr->GetX()[i], y, Form("%.1f", cuts[i]));
+			lt->SetTextSize(0.02);
+			gr->GetListOfFunctions()->Add(lt);
+		   }
+		}
+
 		mg->Add(gr, "c*");
 		std::string str = names.at(i) + " vs. " + bgName;
 		l->AddEntry(gr, str.c_str(), "f");
@@ -74,7 +88,7 @@ void Plots::PlotROC(string filename)
 	gPad->Update(); gPad->Modified();
 
 	cs->Write(); f->Close(); delete f;
-	cs->Print(filename.c_str());
+	//cs->Print(filename.c_str());
 }
 
 void Plots::PlotAll(string filename)
