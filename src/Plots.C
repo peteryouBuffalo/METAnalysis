@@ -69,9 +69,9 @@ void Plots::PlotROC(string filename)
 		{
 		   for (Int_t j = 0; j < N; ++j)
 		   {
-			Double_t y = gr->GetY()[i]+0.1;
-			if (cuts[i] > 40) y = gr->GetY()[i] - 0.1;
-			TLatex *lt = new TLatex(gr->GetX()[i], y, Form("%.1f", cuts[i]));
+			Double_t y = gr->GetY()[j]+0.1;
+			if (cuts[j] > 40) y = gr->GetY()[j] - 0.1;
+			TLatex *lt = new TLatex(gr->GetX()[j], y, Form("%.1f", cuts[j]));
 			lt->SetTextSize(0.02);
 			gr->GetListOfFunctions()->Add(lt);
 		   }
