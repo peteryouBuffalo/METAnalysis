@@ -201,7 +201,7 @@ void Plots::PlotAll(string filename)
 		   hs->GetYaxis()->SetTitleOffset(1.3);
 		   if (bg.size() > 0)
 			hs->GetXaxis()->SetTitle(bg.at(0).at(i)->GetXaxis()->GetTitle());
-		   hs->GetYaxis()->SetTitle("Events");
+		   hs->GetYaxis()->SetTitle("Events/2 GeV");
 		   l->Draw("same");
 		}//end-if
 
