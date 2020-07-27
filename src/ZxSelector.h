@@ -35,8 +35,8 @@ public :
    std::vector<Float_t> bData;
    std::vector<Float_t> cData;
 
-   std::vector<LepObj> Electrons;
-   std::vector<LepObj> Muons;
+   std::vector<LepObj> Electrons, Elec_jetOverlap;
+   std::vector<LepObj> Muons, Muon_jetOverlap;
    std::vector<JetObj> Jets;
    std::vector<TLorentzVector> SVs;
 

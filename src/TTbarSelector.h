@@ -28,8 +28,8 @@ public :
 	
    int TotalEvents = 0;
 
-   std::vector<LepObj> Electrons;
-   std::vector<LepObj> Muons;
+   std::vector<LepObj> Electrons, Elec_jetOverlap;
+   std::vector<LepObj> Muons, Muon_jetOverlap;
    std::vector<JetObj> Jets;
    std::vector<ZObj> ZBosons;
    std::vector<TLorentzVector> SVs;

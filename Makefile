@@ -16,7 +16,7 @@ mydict:
 	@rootcint TTbarSelector_dict.cxx -c src/TTbarSelector.h
 	@rootcint ZxSelector_dict.cxx -c src/ZxSelector.h
 
-main: Analyze.C TTbarSelector_dict.o TTbarSelector.o ZxSelector.o ZxSelector_dict.o  src/Plots.o
+main: Analyze.C Global.o TTbarSelector_dict.o TTbarSelector.o ZxSelector.o ZxSelector_dict.o  src/Plots.o
 	$(CXX) $(CXXFLAGS) $(ROOTGLIBS) $^ -o $@
 	@echo '-> main created!'
 	@echo '-> run by command: ./main'

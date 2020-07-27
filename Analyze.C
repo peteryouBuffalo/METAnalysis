@@ -2,17 +2,63 @@
 #include "src/TTbarSelector.h"
 #include "src/ZxSelector.h"
 #include "src/Plots.h"
+#include "src/Global.h"
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
+#include <boost/algorithm/string.hpp>
 #include <TChain.h>
 #include <TGraphAsymmErrors.h>
 #include <string>
 
+// SetParameters method /////////////////////////////////////////////////////////////
+
+void SetParameters(std::string fName, glob::Parameters& para)
+{
+	std::string line;
+	std::ifstream myfile(fName);
+	if(myfile.is_open())
+	{
+	   while(getline(myfile,line))
+	   {
+		//skip comment line start with "//"
+		if(line.find("//") != std::string::npos) continue;
+
+		std::vector<std::string> cont;
+		std::vector<std::string> cont_no_space;
+		std::string delim(" ");
+		boost::split(cont, line, boost::is_any_of(delim));
+
+		for (size_t i = 0; i < cont.size(); ++i) {
+			if (cont[i].find_first_not_of(' ') != std::string::npos){
+				cont_no_space.push_back(cont[i]);
+			}
+		}
+
+		if (cont_no_space.size() != 3) {
+		   std::cout << "\n Need name, value, value type. Will skip this \"" << line << "\"" << std::endl;
+		}
+		else {
+		   std::string name = cont_no_space[0];
+		   if (cont_no_space[2] == "int") para.Set(name, std::stoi(cont[1]));
+		   if (cont_no_space[2] == "float") para.Set(name, std::stof(cont_no_space[1]));
+		}
+	   }
+
+	   myfile.close();
+	}
+
+	else std::cout << "Unable to open file" << std::endl;
+}
+
 // main method ///////////////////////////////////////////////////////////////////////////
 
-int main(int argc, char**argv)
+int main(int argc, char* argv[])
 {
+	// Set the configuration values
+	std::string cfgfilename = "Configs/inputParameters.txt";
+	SetParameters(cfgfilename, CUTS);
+
 	// Create the ttbar selector & have it read the data
 	std::cout << "Entering the analysis..." << std::endl;
 	TTbarSelector *ttbar = new TTbarSelector();
@@ -77,12 +123,12 @@ int main(int argc, char**argv)
 	Plots p;
 	p.AddBg(ttbar->histograms, std::string("TTbar"));
 	p.AddBg(zhf->lHists, std::string("Z+l"));
-	p.AddBg(zhf->bHists, std::string("Z+b"));
+	//p.AddBg(zhf->bHists, std::string("Z+b"));
 	p.PlotAll(std::string("results/results.pdf"));
 
 	// Generate the ROC curve
 	p.AddBgData(ttbar->data, std::string("TTbar"));
 	p.AddData(zhf->lData, std::string("Z+l"));
-	p.AddData(zhf->bData, std::string("Z+b"));
+	//p.AddData(zhf->bData, std::string("Z+b"));
 	p.PlotROC(std::string("results/results.pdf"));
 }

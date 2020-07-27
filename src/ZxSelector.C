@@ -26,26 +26,66 @@
 
 
 #include "ZxSelector.h"
+#include "Global.h"
 #include <TH2.h>
 #include <TStyle.h>
 
 void ZxSelector::BuildEvent()
 {
    // Get the electrons from the event
-   Electrons.clear();
+   Electrons.clear(); Elec_jetOverlap.clear();
    for (unsigned int i = 0; i < *nElectron; ++i)
    {	
+
+	// create the lepton object
 	LepObj elec(Electron_pt[i],Electron_eta[i],Electron_phi[i],
 	Electron_mass[i], 0);
+	
+	// check for jet overlap candidate
+	if (elec.m_lvec.Pt() > CUTS.Get<float>("lep_jetOverlap_pt") &&
+	fabs(elec.m_lvec.Eta()) < CUTS.Get<float>("lep_jetOverlap_eta"))
+	{
+		int elecID = Electron_cutBased[i];
+		if (elecID >= 2) Elec_jetOverlap.push_back(elec);
+	}
+
+	// skip the lepton if it doesn't mean our criteria
+	if (elec.m_lvec.Pt() < CUTS.Get<float>("lep_pt1") || 
+	fabs(elec.m_lvec.Eta()) > CUTS.Get<float>("lep_eta")) continue;
+
+	// check the other criteria
+	float etaSC = elec.m_lvec.Eta() - Electron_deltaEtaSC[i];
+	if (fabs(etaSC) < 1.566 && fabs(etaSC) > 1.442) continue;
+
+	int elecID = Electron_cutBased[i];
+	if (elecID < 2) continue;
  	Electrons.push_back(elec);
    }
 
    // Get the muons from the event
-   Muons.clear();
+   Muons.clear(); Muon_jetOverlap.clear();
    for (unsigned int i = 0; i < *nMuon; ++i)
    {
+	// create the muon object
 	LepObj muon(Muon_pt[i],Muon_eta[i],Muon_phi[i],Muon_mass[i],
 	Muon_pfRelIso04_all[i]);
+
+	// check for jet overlap
+	if (muon.m_lvec.Pt() > CUTS.Get<float>("lep_jetOverlap_pt") && 
+	fabs(muon.m_lvec.Eta()) < CUTS.Get<float>("lep_jetOverlap_eta"))
+	{
+		if (Muon_looseId[i] > 0 && Muon_pfRelIso04_all[i] < 
+		CUTS.Get<float>("muon_iso"))
+			Muon_jetOverlap.push_back(muon);
+	}
+
+	// skip the lepton if it doesn't meet our criteria
+	if (muon.m_lvec.Pt() < CUTS.Get<float>("lep_pt1") ||
+	fabs(muon.m_lvec.Eta()) > CUTS.Get<float>("lep_eta")) continue;
+
+	if (Muon_looseId[i] <= 0) continue;
+	if (muon.m_iso > CUTS.Get<float>("muon_iso")) continue;
+
 	Muons.push_back(muon);
    }
 
@@ -66,9 +106,15 @@ void ZxSelector::BuildEvent()
 	Jet_hadronFlavour[i], Jet_btagDeepB[i], Jet_btagDeepFlavB[i]);
 	jet.SetSV(SVs);
 
+	// check to see if the jet meets our criteria
+	if (jet.m_lvec.Pt() < CUTS.Get<float>("jet_pt") || 
+	fabs(jet.m_lvec.Eta()) > CUTS.Get<float>("jet_eta")) continue;
+
 	// ignore jets that overlap with leptons
-	if (jet.IsLepton(Electrons)) continue;
-	if (jet.IsLepton(Muons)) continue;
+	if (jet.IsLepton(Elec_jetOverlap)) continue;
+	if (jet.IsLepton(Muon_jetOverlap)) continue;
+
+	if (Jet_jetId[i] <= 0) continue;
 
 	Jets.push_back(jet);
    }

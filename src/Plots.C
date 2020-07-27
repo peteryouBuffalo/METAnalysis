@@ -7,6 +7,11 @@
 Plots::Plots() {} 
 Plots::~Plots() {}
 
+void Plots::PlotRest(std::vector<TH1F*> v)
+{
+
+}
+
 void Plots::PlotROC(string filename)
 {
 	TFile *f = new TFile("results/out.root", "UPDATE");
@@ -72,7 +77,7 @@ void Plots::PlotROC(string filename)
 			Double_t y = gr->GetY()[j]+0.1;
 			if (cuts[j] > 40) y = gr->GetY()[j] - 0.1;
 			TLatex *lt = new TLatex(gr->GetX()[j], y, Form("%.1f", cuts[j]));
-			lt->SetTextSize(0.02);
+			lt->SetTextSize(0.03);
 			gr->GetListOfFunctions()->Add(lt);
 		   }
 		}
@@ -157,17 +162,17 @@ void Plots::PlotAll(string filename)
 		    {
 			switch(j) {
 			case 0:
-				it->at(i)->SetFillColor(kRed); break;
-			case 1:
-				it->at(i)->SetFillColor(kOrange); break;
-			case 2:
 				it->at(i)->SetFillColor(kYellow); break;
-			case 3:
+			case 1:
 				it->at(i)->SetFillColor(kGreen); break;
+			case 2:
+				it->at(i)->SetFillColor(kRed); break;
+			case 3:
+				it->at(i)->SetFillColor(kBlue); break;
 			case 4:
 				it->at(i)->SetFillColor(kCyan); break;
 			case 5:
-				it->at(i)->SetFillColor(kBlue); break;
+				it->at(i)->SetFillColor(kOrange); break;
 			case 6:
 				it->at(i)->SetFillColor(kMagenta); break;
 			case 7:
