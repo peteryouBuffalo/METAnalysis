@@ -142,7 +142,7 @@ void ZxSelector::SlaveBegin(TTree * /*tree*/)
    lHists.push_back(h_lMET);
 
    h_nLJets = new TH1F("nJets", "No. Jets", 10, -0.5, 9.5);
-   h_nLJets->SetXTitle("nJets"); h_nLJets->SetYTitle("Events");
+   h_nLJets->SetXTitle("nJets"); h_nLJets->SetYTitle("Events/2 GeV");
    lHists.push_back(h_nLJets);
 
    h_bMET = new TH1F("MET", "MET Analysis", 150, -0.5, 299.5);
@@ -150,7 +150,7 @@ void ZxSelector::SlaveBegin(TTree * /*tree*/)
    bHists.push_back(h_bMET);
 
    h_nBJets = new TH1F("nJets", "No. Jets", 10, -0.5, 9.5);
-   h_nBJets->SetXTitle("nJets"); h_nBJets->SetYTitle("Events");
+   h_nBJets->SetXTitle("nJets"); h_nBJets->SetYTitle("Events/2 GeV");
    bHists.push_back(h_nBJets);
 
    h_cMET = new TH1F("MET", "MET Analysis", 150, -0.5, 299.5);
@@ -158,7 +158,7 @@ void ZxSelector::SlaveBegin(TTree * /*tree*/)
    cHists.push_back(h_cMET);
 
    h_nCJets = new TH1F("nJets", "No. Jets", 10, -0.5, 9.5);
-   h_nCJets->SetXTitle("nJets"); h_nCJets->SetYTitle("Events");
+   h_nCJets->SetXTitle("nJets"); h_nCJets->SetYTitle("Events/2 GeV");
    cHists.push_back(h_nCJets);
 
 }
