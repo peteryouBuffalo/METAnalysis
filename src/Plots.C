@@ -7,9 +7,16 @@
 Plots::Plots() {} 
 Plots::~Plots() {}
 
-void Plots::PlotRest(std::vector<TH1F*> v)
+void Plots::PlotRest(std::vector<TH1F*>& v)
 {
+	TFile *f = new TFile("results/out.root", "UPDATE");
 
+	for (int i = 0; i < v.size(); ++i)
+	{
+		v.at(i)->Write();
+	}
+
+	f->Close(); delete f;
 }
 
 void Plots::PlotROC(string filename)
@@ -182,6 +189,29 @@ void Plots::PlotAll(string filename)
 			default:
 				it->at(i)->SetFillColor(kBlack); break;
 			}//end-switch
+			
+			double scale = 1;
+			double L_ttbar = 20000/8.794e-08;
+			double L_lJet = it->at(i)->GetEntries()/(1.271e-06*0.427);
+			double L_bJet = it->at(i)->GetEntries()/(1.271e-06*0.152);
+			double L_cJet = it->at(i)->GetEntries()/(1.271e-06*0.119);
+
+			switch(j)
+			{
+			case 0:
+				scale = 1; break;
+			case 1:
+				scale = L_ttbar / L_lJet; break;
+			case 2:
+				scale = L_ttbar / L_bJet; break;
+			case 3: 
+				scale = L_ttbar / L_cJet; break;
+			default:
+				scale = 1; break;
+			}
+
+			//it->at(i)->at(j)->Scale(scale);
+
 			hs->Add(it->at(i));
 			l->AddEntry(it->at(i), bg_names.at(j).c_str(),"f");
 			++j;

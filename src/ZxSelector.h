@@ -30,6 +30,7 @@ public :
    std::vector<TH1F*> lHists;
    std::vector<TH1F*> bHists;
    std::vector<TH1F*> cHists;
+   std::vector<TH1F*> histograms;
 
    std::vector<Float_t> lData;
    std::vector<Float_t> bData;
@@ -46,6 +47,8 @@ public :
    TH1F* h_lMET;
    TH1F* h_bMET;
    TH1F* h_cMET;
+   TH1F* h_Zee_mass;
+   TH1F* h_Zmm_mass;
    void BuildEvent();
 
    // Readers to access the data (delete the ones you do not need).

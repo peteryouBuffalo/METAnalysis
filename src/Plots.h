@@ -20,7 +20,7 @@ class Plots
 public:
 	Plots();
 	virtual ~Plots();
-	virtual void PlotRest(vector<TH1F*> v);
+	virtual void PlotRest(vector<TH1F*>& v);
 	virtual void PlotAll(string filename);
 	virtual void PlotROC(string filename);
 

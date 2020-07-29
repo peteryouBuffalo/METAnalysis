@@ -27,6 +27,7 @@
 
 #include "ZxSelector.h"
 #include "Global.h"
+//#include <TLatex.h>
 #include <TH2.h>
 #include <TStyle.h>
 
@@ -161,7 +162,14 @@ void ZxSelector::SlaveBegin(TTree * /*tree*/)
    h_nCJets->SetXTitle("nJets"); h_nCJets->SetYTitle("Events/2 GeV");
    cHists.push_back(h_nCJets);
 
-}
+   h_Zee_mass = new TH1F("Z_ee_mass", "Di-electron mass", 25, 69.5, 119.5);
+   h_Zee_mass->SetXTitle("m_{ee} [GeV]"); h_Zee_mass->SetYTitle("Events/2 GeV");
+   histograms.push_back(h_Zee_mass);
+
+   h_Zmm_mass = new TH1F("Z_mm_mass", "Di-muon mass", 25, 69.5, 199.5);
+   h_Zmm_mass->SetXTitle("m_{#mu#mu} [GeV]"); h_Zmm_mass->SetYTitle("Events/2 GeV");
+   histograms.push_back(h_Zmm_mass);
+} 
 
 Bool_t ZxSelector::Process(Long64_t entry)
 {
@@ -188,25 +196,71 @@ Bool_t ZxSelector::Process(Long64_t entry)
    if (TotalEvent % 10000 == 0)
 	std::cout << "Z+x MILEMARKER --> at event #" << TotalEvent << std::endl;
 
+   // Get the information from the event
    BuildEvent();
    if (Jets.size() == 0) return false;
-   
-   // check the jet types
-   bool isBtag = false;
-   float csv = Jets.at(0).m_deepCSV;
-   if (csv >= 0.6321) isBtag = true;
-   
 
-   /*if (isBtag){
-	 h_bMET->Fill(*MET_pt);
-	 h_nBJets->Fill(Jets.size());
- 	 bData.push_back(*MET_pt);
+   // Split the jets into categories
+   std::vector<JetObj> bJets, lJets, cJets;
+
+   for (int i = 0; i < Jets.size(); ++i)
+   {
+	float csv = Jets.at(i).m_deepCSV;
+	if (csv >= CUTS.Get<float>("jet_deepCSVM_2016"))
+		bJets.push_back(Jets.at(i));
+	else lJets.push_back(Jets.at(i));
    }
-   else {*/
+
+   // Determine if we have electrons or muons
+   bool elecTrig = false; bool muonTrig = false;
+   if (*HLT_Ele27_WPTight_Gsf) elecTrig = true;
+   if (*HLT_IsoMu24 || *HLT_IsoTkMu24) muonTrig = true;
+
+   // //////////////////////////////////////////
+   // Zee + jets
+   // //////////////////////////////////////////
+   if (elecTrig)
+   {
+	if (Electrons.size() >= 2 && Electrons[0].m_lvec.Pt() >= CUTS.Get<float>("lep_pt0"))
+	{
+		ZObj Z(Electrons[0], Electrons[1]);
+		float mZ = Z.m_lvec.M();
+		//if (mZ >= CUTS.Get<float>("ZMassL") && mZ <= CUTS.Get<float>("ZMassH"))
+		//	h_Zee_mass->Fill(mZ);
+	}
+   }
+
+   // /////////////////////////////////////////////
+   // Zmumu + jets
+   // /////////////////////////////////////////////
+
+   if (muonTrig)
+   {
+	if (Muons.size() >= 2 && Muons[0].m_lvec.Pt() >= CUTS.Get<float>("lep_pt0"))
+	{
+		ZObj Z(Muons[0], Muons[1]);
+		float mZ = Z.m_lvec.M();
+		if (mZ >= CUTS.Get<float>("ZMassL") && mZ <= CUTS.Get<float>("ZMassH"))
+			h_Zmm_mass->Fill(mZ);
+	}	
+   }
+
+   // /////////////////////////////////////////////
+   // MET Analysis (all combined for now)
+   // /////////////////////////////////////////////
+
+   if (bJets.size() > 0 && lJets.size() > 0) return false;
+   
+   if (bJets.size() > 0) 
+   {
+        h_bMET->Fill(*MET_pt);
+	bData.push_back(*MET_pt);
+   }
+   else if (lJets.size() > 0)
+   {
 	h_lMET->Fill(*MET_pt);
-	h_nLJets->Fill(Jets.size());
 	lData.push_back(*MET_pt);
-   //}
+   }
 
    return kTRUE;
 }
