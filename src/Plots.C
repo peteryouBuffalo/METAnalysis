@@ -105,6 +105,7 @@ void Plots::PlotROC(string filename)
 
 void Plots::PlotAll(string filename)
 {
+	// Get the file & update the style so that it meets what we want
 	TFile *f = new TFile("results/out.root", "RECREATE");
 	gROOT->Reset();
 
@@ -152,52 +153,46 @@ void Plots::PlotAll(string filename)
 
 	for (Int_t i = 0; i < N_histos; ++i)
 	{
-		THStack *hs;
-		TLegend *l;
+		// for each unique histogram, let's make a stacked histogram
+		// of all the data sets (ttbar, Z+l, Z+b, Z+c)
+		THStack *hs; TLegend *l;
 		int Nset = data.size() + bg.size() + signal.size();
-		l = new TLegend(0.76,0.95-0.8*Nset/20., 1.0, 0.95);
+		l = new TLegend(0.76,0.95-0.8*Nset/20.,1.0,0.95);
 		l->SetFillStyle(1001);
 		l->SetFillColor(kWhite);
 		l->SetLineColor(kWhite);
 		l->SetLineWidth(2);
 
-		if (bg.size() > 0)
+		if (bg.size() == 0) continue;
+
+		hs = new THStack("hs", bg.at(0).at(i)->GetName());
+		for (int j = 0; j < bg.size(); ++j)
 		{
-		    hs = new THStack("hs", bg.at(0).at(i)->GetName());
-		    int j = 0;
-		    for (std::vector<std::vector<TH1F*>>::const_iterator it = bg.begin(); it != bg.end(); ++it)
-		    {
+			// for the j'th dataset, get the i'th histogram
+			TH1F* hTemp = bg.at(j).at(i);
+
+			// set the proper colors
 			switch(j) {
 			case 0:
-				it->at(i)->SetFillColor(kYellow); break;
+				hTemp->SetFillColor(kYellow); break;
 			case 1:
-				it->at(i)->SetFillColor(kGreen); break;
+				hTemp->SetFillColor(kGreen); break;
 			case 2:
-				it->at(i)->SetFillColor(kRed); break;
-			case 3:
-				it->at(i)->SetFillColor(kBlue); break;
-			case 4:
-				it->at(i)->SetFillColor(kCyan); break;
-			case 5:
-				it->at(i)->SetFillColor(kOrange); break;
-			case 6:
-				it->at(i)->SetFillColor(kMagenta); break;
-			case 7:
-				it->at(i)->SetFillColor(kGray); break;
-			case 8:
-				it->at(i)->SetFillColor(kGray+2); break;
+				hTemp->SetFillColor(kRed); break;
+			case 3: 
+				hTemp->SetFillColor(kBlue); break;
 			default:
-				it->at(i)->SetFillColor(kBlack); break;
-			}//end-switch
-			
+				hTemp->SetFillColor(kBlack); break;
+			}
+
+			// determine the proper scale
 			double scale = 1;
 			double L_ttbar = 20000/8.794e-08;
-			double L_lJet = it->at(i)->GetEntries()/(1.271e-06*0.427);
-			double L_bJet = it->at(i)->GetEntries()/(1.271e-06*0.152);
-			double L_cJet = it->at(i)->GetEntries()/(1.271e-06*0.119);
+			double L_lJet = hTemp->GetEntries()/(1.271e-06*0.427);
+			double L_bJet = hTemp->GetEntries()/(1.271e-06*0.152);
+			double L_cJet = hTemp->GetEntries()/(1.271e-06*0.119);
 
-			switch(j)
-			{
+			switch(j) {
 			case 0:
 				scale = 1; break;
 			case 1:
@@ -210,40 +205,31 @@ void Plots::PlotAll(string filename)
 				scale = 1; break;
 			}
 
-			//it->at(i)->at(j)->Scale(scale);
+			hTemp->Scale(scale);
+			
+			// add the histogram to the stack & legend
+			hs->Add(hTemp);
+			l->AddEntry(hTemp, bg_names.at(j).c_str(), "f");
+		}//end-for
 
-			hs->Add(it->at(i));
-			l->AddEntry(it->at(i), bg_names.at(j).c_str(),"f");
-			++j;
-		    }//end-for-loop
-		}//end-if
-
-		std::string name = "c" + std::to_string(i);
-		TCanvas *c = new TCanvas(name.c_str(), "c", 800, 600);
+		// now that we have created the stack, let's output it
+		// using a canvas.
+		std::string name = "c"+ std::to_string(i);
+		TCanvas* c = new TCanvas(name.c_str(), "c", 800, 600);
 		c->SetLogy(true);
 		std::string plotname;
+
 		if (data.size() == 0 && bg.size() > 0)
 		{
-		   plotname = std::string(bg.at(0).at(i)->GetName());
-		   hs->Draw("hist");
-		   hs->GetXaxis()->SetTitleOffset(1.3);
-		   hs->GetXaxis()->SetNdivisions(505);
-		   hs->GetYaxis()->SetTitleOffset(1.3);
-		   if (bg.size() > 0)
+			plotname = std::string(bg.at(0).at(i)->GetName());
+			hs->Draw("hist");
+			hs->GetXaxis()->SetNdivisions(505);
 			hs->GetXaxis()->SetTitle(bg.at(0).at(i)->GetXaxis()->GetTitle());
-		   hs->GetYaxis()->SetTitle("Events/2 GeV");
-		   l->Draw("same");
+			hs->GetYaxis()->SetTitle("Events/2 GeV");
+			l->Draw("same");
 		}//end-if
-
-		if (i == 0 && N_histos > 1)
-		{ c->Print((filename+std::string("(")).c_str()); }
-		else if (i > 0 && i == N_histos - 1)
-		{ c->Print((filename+std::string(")")).c_str()); }
-		else { c->Print(filename.c_str()); }
-
+		
 		c->Write();
-
-	}//end-for-loop
-
+	}
 	f->Close(); delete f;
 }//end-method

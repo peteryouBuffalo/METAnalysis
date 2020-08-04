@@ -130,8 +130,8 @@ int main(int argc, char* argv[])
 	p.AddBgData(ttbar->data, std::string("TTbar"));
 	p.AddData(zhf->lData, std::string("Z+l"));
 	p.AddData(zhf->bData, std::string("Z+b"));
-	//p.PlotROC(std::string("results/results.pdf"));
+	p.PlotROC(std::string("results/results.pdf"));
 
 	// Plot additional useful histograms
-	p.PlotRest(zhf->histograms);
+	//p.PlotRest(zhf->histograms);
 }

@@ -27,9 +27,9 @@ public :
    TTree          *fChain = 0;   //!pointer to the analyzed TTree or TChain
 
    int TotalEvent = 0;
-   std::vector<TH1F*> lHists;
-   std::vector<TH1F*> bHists;
-   std::vector<TH1F*> cHists;
+   std::vector<TH1F*> lHists, lHists_noT;
+   std::vector<TH1F*> bHists, bHists_noT;
+   std::vector<TH1F*> cHists, cHists_noT;
    std::vector<TH1F*> histograms;
 
    std::vector<Float_t> lData;
@@ -41,14 +41,12 @@ public :
    std::vector<JetObj> Jets;
    std::vector<TLorentzVector> SVs;
 
-   TH1F* h_nBJets;
-   TH1F* h_nCJets;
-   TH1F* h_nLJets;
-   TH1F* h_lMET;
-   TH1F* h_bMET;
-   TH1F* h_cMET;
-   TH1F* h_Zee_mass;
-   TH1F* h_Zmm_mass;
+   TH1F* h_nBJets; TH1F* h_bMET;
+   TH1F* h_nCJets; TH1F* h_cMET;
+   TH1F* h_nLJets; TH1F* h_lMET;
+   TH1F* h_Zee_cJet; TH1F* h_Zmm_cJet;
+   TH1F* h_Zee_bJet; TH1F* h_Zmm_bJet;
+   TH1F* h_Zee_lJet; TH1F* h_Zmm_lJet;
    void BuildEvent();
 
    // Readers to access the data (delete the ones you do not need).
