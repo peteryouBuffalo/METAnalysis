@@ -166,7 +166,7 @@ void ZxSelector::SlaveBegin(TTree * /*tree*/)
    h_Zee_lJet->SetXTitle("m_{ee} [GeV]"); h_Zee_lJet->SetYTitle("Events/2 GeV");
    lHists_noT.push_back(h_Zee_lJet);
 
-   h_Zmm_lJet = new TH1F("Z_mm_mass", "Di-muon mass", 25, 69.5, 199.5);
+   h_Zmm_lJet = new TH1F("Z_mm_mass", "Di-muon mass", 25, 69.5, 119.5);
    h_Zmm_lJet->SetXTitle("m_{#mu#mu} [GeV]"); h_Zmm_lJet->SetYTitle("Events/2 GeV");
    lHists_noT.push_back(h_Zmm_lJet);
    
@@ -174,7 +174,7 @@ void ZxSelector::SlaveBegin(TTree * /*tree*/)
    h_Zee_bJet->SetXTitle("m_{ee} [GeV]"); h_Zee_bJet->SetYTitle("Events/2 GeV");
    bHists_noT.push_back(h_Zee_bJet);
             
-   h_Zmm_bJet = new TH1F("Z_mm_mass", "Di-muon mass", 25, 69.5, 199.5);
+   h_Zmm_bJet = new TH1F("Z_mm_mass", "Di-muon mass", 25, 69.5, 119.5);
    h_Zmm_bJet->SetXTitle("m_{#mu#mu} [GeV]"); h_Zmm_bJet->SetYTitle("Events/2 GeV"); 
    bHists_noT.push_back(h_Zmm_bJet);
             
@@ -251,10 +251,10 @@ Bool_t ZxSelector::Process(Long64_t entry)
 			float mZ = Z.m_lvec.M();
 			if (mZ >= CUTS.Get<float>("ZMassL") && mZ <= CUTS.Get<float>("ZMassH"))
 			{
-				//if (bJets.size() > 0 && lJets.size() == 0) 
-				//	h_Zmm_bJet->Fill(mZ);
-				//else if (lJets.size() > 0 && bJets.size() == 0)
-				//	h_Zmm_lJet->Fill(mZ);
+				if (bJets.size() > 0 && lJets.size() == 0) 
+				{ h_Zmm_bJet->Fill(mZ); }
+	 			else if (lJets.size() > 0 && bJets.size() == 0)
+				{ h_Zmm_lJet->Fill(mZ); }
 			}
 		}	
    }

@@ -7,15 +7,69 @@
 Plots::Plots() {} 
 Plots::~Plots() {}
 
-void Plots::PlotRest(std::vector<TH1F*>& v)
+void Plots::PlotRest()
 {
 	TFile *f = new TFile("results/out.root", "UPDATE");
 
-	for (int i = 0; i < v.size(); ++i)
+	for (Int_t i = 0; i < N_noT; ++i)
 	{
-		v.at(i)->Write();
-	}
-
+		// for each unique histogram, let's make a stacked histogram
+		// of all the data sets (Z+l, Z+b, Z+c)
+		THStack *hs; TLegend *l;
+			
+		int Nset = noTdata.size();
+		l = new TLegend(0.76, 0.95-0.8*Nset/20.,1.0,0.95);
+		l->SetFillStyle(1001);
+		l->SetFillColor(kWhite);
+		l->SetLineColor(kWhite);
+		l->SetLineWidth(2);
+		
+		if (noTdata.size() == 0) continue;
+		
+		hs = new THStack("hs", noTdata.at(0).at(i)->GetName());
+		for (int j = 0; j < noTdata.size(); ++j)
+		{
+			// for the j'th dataset, get the i'th histogram
+			TH1F* hTemp = noTdata.at(j).at(i);
+			
+			// set the proper color
+			switch(j) {
+				case 0:
+					hTemp->SetFillColor(kGreen); break;
+				case 1:
+					hTemp->SetFillColor(kRed); break;
+				case 2:
+					hTemp->SetFillColor(kBlue); break;
+				default:
+					hTemp->SetFillColor(kBlack); break;
+			}
+			
+			// add the historam to the stack & legend
+			hs->Add(hTemp);
+			l->AddEntry(hTemp, noT_names.at(j).c_str(), "f");
+			
+		}//end-for
+		
+		// Now that we have created the stack, let's output it
+		// using a canvas.
+		std::string name = "d" + std::to_string(i);
+		TCanvas* c = new TCanvas(name.c_str(), "d", 800, 600);
+		//c->SetLogy(true);
+		std::string plotname;
+		
+		if (noTdata.size() > 0)
+		{
+			plotname = std::string(noTdata.at(0).at(i)->GetName());
+			hs->Draw("hist");
+			//hs->GetXaxis()->SetNdivisions(505);
+			hs->GetXaxis()->SetTitle(noTdata.at(0).at(i)->GetXaxis()->GetTitle());
+			hs->GetYaxis()->SetTitle("Events/2 GeV");
+			l->Draw("same");
+		}//end-if
+		
+		c->Write();
+	}	
+	
 	f->Close(); delete f;
 }
 

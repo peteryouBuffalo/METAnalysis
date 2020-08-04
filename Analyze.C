@@ -133,5 +133,7 @@ int main(int argc, char* argv[])
 	p.PlotROC(std::string("results/results.pdf"));
 
 	// Plot additional useful histograms
-	//p.PlotRest(zhf->histograms);
+	p.AddNoT(zhf->lHists_noT, "Z+l");
+	p.AddNoT(zhf->bHists_noT, "Z+b");
+	p.PlotRest();
 }

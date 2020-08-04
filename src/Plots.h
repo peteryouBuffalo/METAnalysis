@@ -20,7 +20,7 @@ class Plots
 public:
 	Plots();
 	virtual ~Plots();
-	virtual void PlotRest(vector<TH1F*>& v);
+	virtual void PlotRest();
 	virtual void PlotAll(string filename);
 	virtual void PlotROC(string filename);
 
@@ -74,6 +74,13 @@ public:
 		signal.clear();
 		signal_names.clear();
 	}
+	
+	void AddNoT(vector<TH1F*> v, string n)
+	{
+		noTdata.push_back(v);
+		noT_names.push_back(n);
+		N_noT = v.size();
+	}
 
 private:
 	vector<vector<TH1F*>> data;
@@ -83,8 +90,11 @@ private:
 	vector<string> data_names;
 	vector<string> bg_names;
 	vector<string> signal_names;
+	
+	vector<vector<TH1F*>> noTdata;
+	vector<string> noT_names;
 
-	int N_histos;
+	int N_histos; int N_noT;
 
 	vector<Float_t> tData;
 	vector<vector<Float_t>> zData;
