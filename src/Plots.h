@@ -20,7 +20,8 @@ class Plots
 public:
 	Plots();
 	virtual ~Plots();
-	virtual void PlotRest();
+	virtual void PlotStacks();
+	virtual void PlotGraphs();
 	virtual void PlotAll(string filename);
 	virtual void PlotROC(string filename);
 

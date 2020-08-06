@@ -49,7 +49,7 @@ class JetObj
 	    float maxPt = -1;
 	    m_svIdx = -1;
 	    m_mSV = -1;
-            for (unsigned isv = 0; isv < sv.size(); ++isv)
+        for (unsigned isv = 0; isv < sv.size(); ++isv)
 	    {
 	
 		float dRtemp = m_lvec.DeltaR(sv[isv]);

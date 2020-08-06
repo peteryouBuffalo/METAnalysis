@@ -7,10 +7,15 @@
 Plots::Plots() {} 
 Plots::~Plots() {}
 
-void Plots::PlotRest()
+void Plots::PlotGraphs()
+{
+
+}
+
+void Plots::PlotStacks()
 {
 	TFile *f = new TFile("results/out.root", "UPDATE");
-
+	
 	for (Int_t i = 0; i < N_noT; ++i)
 	{
 		// for each unique histogram, let's make a stacked histogram
@@ -25,6 +30,8 @@ void Plots::PlotRest()
 		l->SetLineWidth(2);
 		
 		if (noTdata.size() == 0) continue;
+		
+		float L_lJet;
 		
 		hs = new THStack("hs", noTdata.at(0).at(i)->GetName());
 		for (int j = 0; j < noTdata.size(); ++j)
@@ -42,6 +49,21 @@ void Plots::PlotRest()
 					hTemp->SetFillColor(kBlue); break;
 				default:
 					hTemp->SetFillColor(kBlack); break;
+			}
+			
+			// Scale as needed
+			if (j == 0) L_lJet = hTemp->GetEntries()/(1.271e-06*0.427);
+			else if (j == 1)
+			{
+				float lum = hTemp->GetEntries()/(1.271e-06*0.152);
+				float scale = L_lJet / lum;
+				hTemp->Scale(scale);
+			} 
+			else if (j == 2)
+			{
+				float lum = hTemp->GetEntries()/(1.271e-06*0.119);
+				float scale = L_lJet / lum;
+				hTemp->Scale(scale);
 			}
 			
 			// add the historam to the stack & legend

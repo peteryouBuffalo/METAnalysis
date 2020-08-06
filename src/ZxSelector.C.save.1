@@ -317,6 +317,8 @@ Bool_t ZxSelector::Process(Long64_t entry)
    	if ((bJets.size() > 0 && (lJets.size() > 0 || cJets.size() > 0))
    	   || (lJets.size() > 0 && cJets.size() > 0)) return false;
    	   
+   	if (Muons.size() < 2 && Electrons.size() < 2) return false;
+   	   
    	TLorentzVector sum;
    	for (Int_t i = 0; i < Electrons.size(); ++i)
    		sum += Electrons.at(i).m_lvec;
@@ -331,7 +333,7 @@ Bool_t ZxSelector::Process(Long64_t entry)
 		
 		for (Int_t k = 0; k < bJets.size(); ++k)
 			sum += bJets.at(k).m_lvec;
-		h_METRec_bJet->Fill(sum.Pt());
+		h_METRec_bJet.push_back(sum.Pt());
 		
 		// For each jet, check the secondary vertex. If we were 
 		// able to identify the SV, add its mass to the histogram
@@ -349,7 +351,7 @@ Bool_t ZxSelector::Process(Long64_t entry)
   		
   		for (Int_t k = 0; k < cJets.size(); ++k)
   			sum += cJets.at(k).m_lvec;
-  		h_METRec_cJet->Fill(sum.Pt());
+  		h_METRec_cJet.push_back(sum.Pt());
   		
   		// For each jet, check the secondary vertex. If we were
   		// able to identify the SV, add its mass to the histogram
@@ -367,7 +369,7 @@ Bool_t ZxSelector::Process(Long64_t entry)
 		
 		for (Int_t k = 0; k < lJets.size(); ++k)
 			sum += lJets.at(k).m_lvec;
-		h_METRec_lJet->Fill(sum.Pt());
+		h_METRec_lJet.push_back(sum.Pt());
 		
 		// For each jet, check the secondary vertex. If we were
 		// able to identify the SV, add its mass to the historam

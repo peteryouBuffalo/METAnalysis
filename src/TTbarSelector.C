@@ -135,6 +135,11 @@ void TTbarSelector::SlaveBegin(TTree * /*tree*/)
    h_nJet = new TH1F("nJets", "No. Jets", 10, -0.5, 9.5);
    h_nJet->SetXTitle("nJets"); h_nJet->SetYTitle("Events");
    histograms.push_back(h_nJet);
+   
+   h_MET_Rec = new TH1F("MET_Rec", "MET Analysis (Reconstructed)",
+   150, -0.5, 299.5); h_MET_Rec->SetXTitle("MET [GeV]");
+   h_MET_Rec->SetYTitle("Events/2 GeV");
+   histograms.push_back(h_MET_Rec);
 }
 
 Bool_t TTbarSelector::Process(Long64_t entry)
@@ -151,6 +156,21 @@ Bool_t TTbarSelector::Process(Long64_t entry)
    h_nJet->Fill(Jets.size());
    h_MET->Fill(*MET_pt);
    data.push_back(*MET_pt);
+   
+   // Take the final state products to recreate the MET from scratch
+   TLorentzVector sum;
+   
+   if (Jets.size() < 2) return false;
+   
+   for (Int_t i = 0; i < Jets.size(); ++i)
+   { sum += Jets.at(i).m_lvec; }
+   for (Int_t j = 0; j < Electrons.size(); ++j)
+   { sum += Electrons.at(j).m_lvec; }
+   for (Int_t k = 0; k < Muons.size(); ++k)
+   { sum += Muons.at(k).m_lvec; }
+   
+   Float_t MET = sum.Pt();
+   h_MET_Rec->Fill(MET);
 
    return kTRUE;
 }

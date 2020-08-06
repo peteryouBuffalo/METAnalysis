@@ -124,16 +124,19 @@ int main(int argc, char* argv[])
 	p.AddBg(ttbar->histograms, std::string("TTbar"));
 	p.AddBg(zhf->lHists, std::string("Z+l"));
 	p.AddBg(zhf->bHists, std::string("Z+b"));
+	p.AddBg(zhf->cHists, std::string("Z+c"));
 	p.PlotAll(std::string("results/results.pdf"));
 
 	// Generate the ROC curve
 	p.AddBgData(ttbar->data, std::string("TTbar"));
 	p.AddData(zhf->lData, std::string("Z+l"));
 	p.AddData(zhf->bData, std::string("Z+b"));
+	p.AddData(zhf->cData, std::string("Z+c"));
 	p.PlotROC(std::string("results/results.pdf"));
 
 	// Plot additional useful histograms
 	p.AddNoT(zhf->lHists_noT, "Z+l");
 	p.AddNoT(zhf->bHists_noT, "Z+b");
-	p.PlotRest();
+	p.AddNoT(zhf->cHists_noT, "Z+c");
+	p.PlotStacks();
 }

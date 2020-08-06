@@ -38,6 +38,7 @@ public :
    std::vector<TH1F*> histograms;
    TH1F *h_MET;
    TH1F *h_nJet;
+   TH1F *h_MET_Rec;
    void BuildEvent();
 
    // Readers to access the data (delete the ones you do not need).
