@@ -33,7 +33,8 @@ void Plots::PlotStacks()
 		
 		float L_lJet;
 		
-		hs = new THStack("hs", noTdata.at(0).at(i)->GetName());
+		std::string n = "hs" + std::to_string(i);
+		hs = new THStack(n.c_str(), noTdata.at(0).at(i)->GetName());
 		for (int j = 0; j < noTdata.size(); ++j)
 		{
 			// for the j'th dataset, get the i'th histogram
@@ -89,7 +90,7 @@ void Plots::PlotStacks()
 			l->Draw("same");
 		}//end-if
 		
-		c->Write();
+		c->Write(); hs->Write();
 	}	
 	
 	f->Close(); delete f;
