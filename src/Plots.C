@@ -242,7 +242,8 @@ void Plots::PlotAll(string filename)
 
 		if (bg.size() == 0) continue;
 
-		hs = new THStack("hs", bg.at(0).at(i)->GetName());
+		std::string n = "hsAll" + std::to_string(i);
+		hs = new THStack(n.c_str(), bg.at(0).at(i)->GetName());
 		for (int j = 0; j < bg.size(); ++j)
 		{
 			// for the j'th dataset, get the i'th histogram
@@ -306,7 +307,7 @@ void Plots::PlotAll(string filename)
 			l->Draw("same");
 		}//end-if
 		
-		c->Write();
+		c->Write(); hs->Write();
 	}
 	f->Close(); delete f;
 }//end-method
