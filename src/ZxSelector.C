@@ -313,9 +313,6 @@ Bool_t ZxSelector::Process(Long64_t entry)
    	// /////////////////////////////////////////////
    	// MET Analysis (all combined for now)
    	// /////////////////////////////////////////////
-
-   	if ((bJets.size() > 0 && (lJets.size() > 0 || cJets.size() > 0))
-   	   || (lJets.size() > 0 && cJets.size() > 0)) return false;
    	   
    	TLorentzVector sum;
    	for (Int_t i = 0; i < Electrons.size(); ++i)
@@ -341,7 +338,7 @@ Bool_t ZxSelector::Process(Long64_t entry)
 			if (msv >= 0) h_msv_bJet->Fill(msv*1000);
 		}
   	}
-  	else if (cJets.size() > 0)
+  	if (cJets.size() > 0)
   	{
   		// Add the MET data to the proper location
   		h_cMET->Fill(*MET_pt);
@@ -359,7 +356,7 @@ Bool_t ZxSelector::Process(Long64_t entry)
   			if (msv >= 0) h_msv_cJet->Fill(msv*1000);
   		}
   	}
-   	else if (lJets.size() > 0)
+   	if (lJets.size() > 0)
    	{
    		// Add the MET data to the proper locations
 		h_lMET->Fill(*MET_pt);
