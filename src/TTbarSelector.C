@@ -38,76 +38,77 @@ void TTbarSelector::BuildEvent()
 	{
 
 		// create the lepton object
-   		 LepObj elec(Electron_pt[i],Electron_eta[i],Electron_phi[i],
-    		Electron_mass[i], 0);
+   		LepObj elec(Electron_pt[i],Electron_eta[i],Electron_phi[i],
+    	Electron_mass[i], 0);
 
-    		// check for jet overlap candidate
-    		if (elec.m_lvec.Pt() > CUTS.Get<float>("lep_jetOverlap_pt") &&
-    		fabs(elec.m_lvec.Eta()) < CUTS.Get<float>("lep_jetOverlap_eta"))
-    		{
-            		int elecID = Electron_cutBased[i];
-            		if (elecID >= 2) Elec_jetOverlap.push_back(elec);
-    		}
+    	// check for jet overlap candidate
+    	if (elec.m_lvec.Pt() > CUTS.Get<float>("lep_jetOverlap_pt") &&
+    	fabs(elec.m_lvec.Eta()) < CUTS.Get<float>("lep_jetOverlap_eta"))
+    	{
+        	int elecID = Electron_cutBased[i];
+          	if (elecID >= 2) Elec_jetOverlap.push_back(elec);
+    	}
 
 		// skip the lepton if it doesn't mean our criteria
-    		if (elec.m_lvec.Pt() < CUTS.Get<float>("lep_pt1") ||
-    		fabs(elec.m_lvec.Eta()) > CUTS.Get<float>("lep_eta")) continue;
+    	if (elec.m_lvec.Pt() < CUTS.Get<float>("lep_pt1") ||
+    	fabs(elec.m_lvec.Eta()) > CUTS.Get<float>("lep_eta")) continue;
 
    		// check the other criteria
-    		float etaSC = elec.m_lvec.Eta() - Electron_deltaEtaSC[i];
-    		if (fabs(etaSC) < 1.566 && fabs(etaSC) > 1.442) continue;
+    	float etaSC = elec.m_lvec.Eta() - Electron_deltaEtaSC[i];
+    	if (fabs(etaSC) < 1.566 && fabs(etaSC) > 1.442) continue;
 
-    		int elecID = Electron_cutBased[i];
-    		if (elecID < 2) continue;
-    		Electrons.push_back(elec);
+    	int elecID = Electron_cutBased[i];
+    	if (elecID < 2) continue;
+    	Electrons.push_back(elec);
 	}
 
 	// Get the muons from the event
 	Muons.clear(); Muon_jetOverlap.clear();
 	for (unsigned int i = 0; i < *nMuon; ++i)
 	{
-    		// create the muon object
-    		LepObj muon(Muon_pt[i],Muon_eta[i],Muon_phi[i],Muon_mass[i],
-    		Muon_pfRelIso04_all[i]);
+    	// create the muon object
+    	LepObj muon(Muon_pt[i],Muon_eta[i],Muon_phi[i],Muon_mass[i],
+    	Muon_pfRelIso04_all[i]);
 
-    		// check for jet overlap
-    		if (muon.m_lvec.Pt() > CUTS.Get<float>("lep_jetOverlap_pt") &&
-    		fabs(muon.m_lvec.Eta()) < CUTS.Get<float>("lep_jetOverlap_eta"))
-    		{
-            	if (Muon_looseId[i] > 0 && Muon_pfRelIso04_all[i] <
-            	CUTS.Get<float>("muon_iso"))
-                    Muon_jetOverlap.push_back(muon);
-    		}
+    	// check for jet overlap
+    	if (muon.m_lvec.Pt() > CUTS.Get<float>("lep_jetOverlap_pt") &&
+    	fabs(muon.m_lvec.Eta()) < CUTS.Get<float>("lep_jetOverlap_eta"))
+    	{
+           	if (Muon_looseId[i] > 0 && Muon_pfRelIso04_all[i] <
+           	CUTS.Get<float>("muon_iso"))
+            	Muon_jetOverlap.push_back(muon);
+    	}
 
 		// skip the lepton if it doesn't meet our criteria
-    		if (muon.m_lvec.Pt() < CUTS.Get<float>("lep_pt1") ||
-    		fabs(muon.m_lvec.Eta()) > CUTS.Get<float>("lep_eta")) continue;
+    	if (muon.m_lvec.Pt() < CUTS.Get<float>("lep_pt1") ||
+    	fabs(muon.m_lvec.Eta()) > CUTS.Get<float>("lep_eta")) continue;
 
-    		if (Muon_looseId[i] <= 0) continue;
-    		if (muon.m_iso > CUTS.Get<float>("muon_iso")) continue;
+    	if (Muon_looseId[i] <= 0) continue;
+    	if (muon.m_iso > CUTS.Get<float>("muon_iso")) continue;
 
-   		 Muons.push_back(muon);
+   		Muons.push_back(muon);
 	}
 
 	// Get the secondary vertex options
-        SVs.clear();
+    SVs.clear();
 	for (unsigned int i = 0; i < *nSV; ++i)
 	{
-	TLorentzVector tmp;
-	 tmp.SetPtEtaPhiM(SV_pt[i],SV_eta[i],SV_phi[i],SV_mass[i]);
-   	 SVs.push_back(tmp);
+		TLorentzVector tmp;
+	 	tmp.SetPtEtaPhiM(SV_pt[i],SV_eta[i],SV_phi[i],SV_mass[i]);
+   	 	SVs.push_back(tmp);
 	}
+	
 	// ...Bennie and the Jets
-        Jets.clear();
+    Jets.clear();
 	for (unsigned int i = 0; i < *nJet; ++i)
 	{
-	JetObj jet(Jet_pt[i], Jet_eta[i], Jet_phi[i], Jet_mass[i],
+		JetObj jet(Jet_pt[i], Jet_eta[i], Jet_phi[i], Jet_mass[i],
 	    Jet_hadronFlavour[i], Jet_btagDeepB[i], Jet_btagDeepFlavB[i]);
 	    jet.SetSV(SVs);
 
     	// ignore jets that overlap with leptons
     	if (jet.IsLepton(Electrons)) continue;
-	Jets.push_back(jet);
+		Jets.push_back(jet);
 	}
    
 }

@@ -226,22 +226,8 @@ void ZxSelector::SlaveBegin(TTree * /*tree*/)
 
 Bool_t ZxSelector::Process(Long64_t entry)
 {
-   // The Process() function is called for each entry in the tree (or possibly
-   // keyed object in the case of PROOF) to be processed. The entry argument
-   // specifies which entry in the currently loaded tree is to be processed.
-   // When processing keyed objects with PROOF, the object is already loaded
-   // and is available via the fObject pointer.
-   //
-   // This function should contain the \"body\" of the analysis. It can contain
-   // simple or elaborate selection criteria, run algorithms on the data
-   // of the event and typically fill histograms.
-   //
-   // The processing can be stopped by calling Abort().
-   //
-   // Use fStatus to set the return value of TTree::Process().
-   //
-   // The return value is currently not used.
-
+   
+	// Get the information from the event
    	fReader.SetLocalEntry(entry);
    	GetEntry(entry);
    	++TotalEvent;
@@ -249,7 +235,7 @@ Bool_t ZxSelector::Process(Long64_t entry)
    	if (TotalEvent % 10000 == 0)
 		std::cout << "Z+x MILEMARKER --> at event #" << TotalEvent << std::endl;
 
-   	// Get the information from the event
+   	// Reconstruct our event given the information
    	BuildEvent();
   	if (Jets.size() == 0) return false;
 
@@ -258,11 +244,7 @@ Bool_t ZxSelector::Process(Long64_t entry)
 
    	for (int i = 0; i < Jets.size(); ++i)
    	{
-		//float csv = Jets.at(i).m_deepCSV;
-		//if (csv >= CUTS.Get<float>("jet_deepCSVM_2016"))
-		//	bJets.push_back(Jets.at(i));
-		//else lJets.push_back(Jets.at(i));
-		
+		// Since we're doing MC sample, we can just use the flavor.		
 		if (Jets.at(i).m_flav == 5) bJets.push_back(Jets.at(i));
 		if (Jets.at(i).m_flav == 4) cJets.push_back(Jets.at(i));
 		if (Jets.at(i).m_flav < 4) lJets.push_back(Jets.at(i));
@@ -328,6 +310,10 @@ Bool_t ZxSelector::Process(Long64_t entry)
 		
 		for (Int_t k = 0; k < bJets.size(); ++k)
 			sum += bJets.at(k).m_lvec;
+		for (Int_t m = 0; m < Muons.size(); ++m)
+			sum += Muons.at(m).m_lvec;
+		for (Int_t e = 0; e < Electrons.size(); ++e)
+			sum += Electrons.at(e).m_lvec;
 		h_METRec_bJet->Fill(sum.Pt());
 		
 		// For each jet, check the secondary vertex. If we were 
@@ -346,6 +332,11 @@ Bool_t ZxSelector::Process(Long64_t entry)
   		
   		for (Int_t k = 0; k < cJets.size(); ++k)
   			sum += cJets.at(k).m_lvec;
+  		for (Int_t m = 0; m < Muons.size(); ++m)
+  		    sum	+= Muons.at(m).m_lvec;
+  		for (Int_t e = 0; e < Electrons.size();	++e)
+  		    sum	+= Electrons.at(e).m_lvec;
+  		            	            
   		h_METRec_cJet->Fill(sum.Pt());
   		
   		// For each jet, check the secondary vertex. If we were
@@ -364,6 +355,10 @@ Bool_t ZxSelector::Process(Long64_t entry)
 		
 		for (Int_t k = 0; k < lJets.size(); ++k)
 			sum += lJets.at(k).m_lvec;
+		for (Int_t m = 0; m < Muons.size(); ++m)
+			sum += Muons.at(m).m_lvec;
+		for (Int_t e = 0; e < Electrons.size(); ++e)
+			sum += Electrons.at(e).m_lvec; 
 		h_METRec_lJet->Fill(sum.Pt());
 		
 		// For each jet, check the secondary vertex. If we were
