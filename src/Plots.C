@@ -104,7 +104,8 @@ void Plots::PlotROC(string filename)
 	Int_t bgTotal = tData.size(), N = 22;
 	Double_t cuts[N], bgEff[N];
 	std::vector<std::vector<Double_t>> dataEff;
-
+	std::vector<std::vector<Int_t>> nData;
+	
 	for (Int_t i = 0; i < N; ++i)
 	{
 		cuts[i] = i*5;
@@ -116,6 +117,7 @@ void Plots::PlotROC(string filename)
 		bgEff[i] = nBg/(bgTotal*1.0);
 
 		std::vector<Double_t> effAtCutI;
+		std::vector<Int_t> nAtCutI;
 
 		// generate the efficiencies for each Z+x set
 		for (Int_t j = 0; j < zData.size(); ++j)
@@ -126,10 +128,14 @@ void Plots::PlotROC(string filename)
 
 			Double_t zEff = nZ/(nSize*1.0);
 			effAtCutI.push_back(zEff);
+			nAtCutI.push_back(nZ);
 		}
 
+		nData.push_back(nAtCutI);
 		dataEff.push_back(effAtCutI);
 	}	
+	
+	TMultiGraph *mg2 = new TMultiGraph("mg2", "Z+f Selection # vs. TTbar Selection #");
 
 	// Now that the data has been calculated, let's appropriately move it 
 	// into graphs to add to a canvas & multigraph
@@ -143,15 +149,18 @@ void Plots::PlotROC(string filename)
 	
 	for (Int_t i = 0; i < zData.size(); ++i)
 	{
-		Double_t data[N];
-		for (Int_t j = 0; j < N; ++j)
+		Double_t data[N], numData[N];
+		for (Int_t j = 0; j < N; ++j) {
 			data[j] = dataEff.at(j).at(i);
+			numData[j] = nData.at(j).at(i); 	
+		}
 
 		TGraph* gr = new TGraph(N, bgEff, data);
-		if (i == 0) gr->SetLineColor(kGreen);
-		else if (i == 1) gr->SetLineColor(kRed);
-		else if (i == 2) gr->SetLineColor(kBlue);
-		else gr->SetLineColor(kMagenta);
+		TGraph* gr2 = new TGraph(N, cuts, numData);
+		if (i == 0){ gr->SetLineColor(kGreen); gr2->SetLineColor(kGreen); }
+		else if (i == 1){ gr->SetLineColor(kRed); gr2->SetLineColor(kRed); }
+		else if (i == 2){ gr->SetLineColor(kBlue); gr2->SetLineColor(kBlue); }
+		else {gr->SetLineColor(kMagenta); gr2->SetLineColor(kMagenta); }
 
 		// Add the cut values to the graph
 		if (i == 0)
@@ -166,7 +175,7 @@ void Plots::PlotROC(string filename)
 		   }
 		}
 
-		mg->Add(gr, "c*");
+		mg->Add(gr, "c*"); mg2->Add(gr2, "c*");
 		std::string str = names.at(i) + " vs. " + bgName;
 		l->AddEntry(gr, str.c_str(), "f");
 	}
@@ -176,7 +185,7 @@ void Plots::PlotROC(string filename)
 	mg->Draw("ac*"); l->Draw(); cs->SetGrid();
 	gPad->Update(); gPad->Modified();
 
-	cs->Write(); f->Close(); delete f;
+	cs->Write(); mg2->Write(); f->Close(); delete f;
 	//cs->Print(filename.c_str());
 }
 
@@ -184,10 +193,10 @@ void Plots::PlotAll(string filename)
 {
 	// Get the file & update the style so that it meets what we want
 	TFile *f = new TFile("results/out.root", "RECREATE");
-	gROOT->Reset();
+	//gROOT->Reset();
 
-	TStyle *MyStyle = new TStyle("MyStyle","My Root Styles");
-	MyStyle->SetStatColor(0);
+	//TStyle *MyStyle = new TStyle("MyStyle","My Root Styles");
+	/*MyStyle->SetStatColor(0);
 	MyStyle->SetCanvasColor(0);
 	MyStyle->SetPadColor(0);
 	MyStyle->SetPadBorderMode(0);
@@ -226,7 +235,7 @@ void Plots::PlotAll(string filename)
 	MyStyle->SetTitleSize(0.05, "x");
 	MyStyle->SetTitleSize(0.05, "y");
 	MyStyle->SetTitleSize(0.05, "z");
-	gROOT->SetStyle("MyStyle");
+	gROOT->SetStyle("MyStyle");*/
 
 	for (Int_t i = 0; i < N_histos; ++i)
 	{
